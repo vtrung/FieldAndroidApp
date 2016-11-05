@@ -66,7 +66,7 @@ public class AddEventActivity extends AppCompatActivity {
         }
     }
 
-    public void postRequest(){
+    private void postRequest(){
         String url = "https://cs496-vtrung.appspot.com/api/event";
 
         StringRequest sr = new StringRequest(Request.Method.POST, url,
