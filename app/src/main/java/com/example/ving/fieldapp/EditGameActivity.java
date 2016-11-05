@@ -17,6 +17,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.Request;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.*;
 
 public class EditGameActivity extends AppCompatActivity {
@@ -26,6 +30,7 @@ public class EditGameActivity extends AppCompatActivity {
     TextView tv1;
     EditText et1;
     EditText et2;
+    Button bt1;
     RequestQueue requestQueue;
 
     @Override
@@ -39,10 +44,9 @@ public class EditGameActivity extends AppCompatActivity {
             game = extras.getString("game");
         }
 
-        tv1 = (TextView) findViewById(R.id.textview1);
-        et1 = (EditView) findViewById(R.id.edittext1);
-        et2 = (EditView) findViewById(R.id.edittext2);
-        bt1 = (Button) findViewById(R.id.button1);
+        tv1 = (TextView) findViewById(R.id.textView5);
+        et1 = (EditText) findViewById(R.id.editText10);
+        bt1 = (Button) findViewById(R.id.button7);
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,7 +65,11 @@ public class EditGameActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         //String test = response;
                         //finishPut();
-                        parseResponse(response);
+                        try {
+                            parseResponse(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -74,9 +82,9 @@ public class EditGameActivity extends AppCompatActivity {
         requestQueue.add(sr);
     }
 
-    private void parseResponse(String response){
+    private void parseResponse(String response) throws JSONException {
         JSONArray jr = new JSONArray(response);
-        JSONObject jo = jr[0];
+        JSONObject jo = jr.getJSONObject(0);
 
         tv1.setText(jo.getString("Name"));
         et1.setText(jo.getString("Description"));

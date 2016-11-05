@@ -82,7 +82,7 @@ public class AddGameActivity extends AppCompatActivity {
         requestQueue.add(sr);
     }
 
-    private finishPost(){
+    private void finishPost(){
         Intent i = new Intent(getApplicationContext(), GameActivity.class);
         i.putExtra("event",event);
         startActivity(i); 

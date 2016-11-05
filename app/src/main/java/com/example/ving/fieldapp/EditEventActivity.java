@@ -18,6 +18,9 @@ import com.android.volley.toolbox.Volley;
 import com.android.volley.Request;
 
 import java.util.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class EditEventActivity extends AppCompatActivity {
 
@@ -41,11 +44,11 @@ public class EditEventActivity extends AppCompatActivity {
         }
         
         // Define class variables
-        tv1 = (TextView) findViewById(R.id.textview1);
-        et1 = (EditView) findViewById(R.id.edittext1);
-        et2 = (EditView) findViewById(R.id.edittext2);
-        et3 = (EditView) findViewById(R.id.edittext3);
-        bt1 = (Button) findViewById(R.id.button1);
+        tv1 = (TextView) findViewById(R.id.textView4);
+        et1 = (EditText) findViewById(R.id.editText7);
+        et2 = (EditText) findViewById(R.id.editText8);
+        et3 = (EditText) findViewById(R.id.editText9);
+        bt1 = (Button) findViewById(R.id.button6);
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +68,11 @@ public class EditEventActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         //String test = response;
                         //finishPut();
-                        parseResponse(response);
+                        try {
+                            parseResponse(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -78,9 +85,9 @@ public class EditEventActivity extends AppCompatActivity {
         requestQueue.add(sr);
     }
 
-    private void parseResponse(String response){
+    private void parseResponse(String response) throws JSONException {
         JSONArray jr = new JSONArray(response);
-        JSONObject jo = jr[0];
+        JSONObject jo = jr.getJSONObject(0);
 
         tv1.setText(jo.getString("Name"));
         et1.setText(jo.getString("Description"));
