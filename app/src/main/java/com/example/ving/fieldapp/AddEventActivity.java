@@ -35,7 +35,7 @@ public class AddEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_event);
 
         tv1 = (TextView)findViewById(R.id.textView);
-        tv1.setText("Select an Event");
+        tv1.setText("Add a New Event");
 
         et1 = (EditText)findViewById(R.id.editText2);
         et2 = (EditText)findViewById(R.id.editText3);

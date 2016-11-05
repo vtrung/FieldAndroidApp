@@ -21,6 +21,7 @@ import java.util.*;
 public class AddGameActivity extends AppCompatActivity {
 
     String event;
+    TextView tv1;
     EditText et1;
     EditText et2;
 
@@ -35,6 +36,10 @@ public class AddGameActivity extends AppCompatActivity {
         if (extras != null) {
             event = extras.getString("event");
         }
+        tv1 = (TextView) findViewById(R.id.textView6);
+        tv1.setText("Add a New Game to Event: " + event);
+        et1 = (EditText) findViewById(R.id.editText10);
+        et2 = (EditText) findViewById(R.id.editText11);
 
         requestQueue = Volley.newRequestQueue(this);
     }

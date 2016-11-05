@@ -29,6 +29,7 @@ public class GameActivity extends AppCompatActivity {
 
     String event;
     TextView tv1;
+    TextView tv2;
     ListView lv1;
     Button bt1;
     Button bt2;
@@ -46,6 +47,8 @@ public class GameActivity extends AppCompatActivity {
 
         tv1 = (TextView) findViewById(R.id.textView1);
         tv1.setText(event);
+        tv2 = (TextView) findViewById(R.id.textView2);
+        
 
         bt1 = (Button) findViewById(R.id.button2);
         bt2 = (Button) findViewById(R.id.button3);
@@ -66,6 +69,38 @@ public class GameActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         getGames();
+    }
+
+    private void getEvent(){
+        String url ="https://cs496-vtrung.appspot.com/api/event/" + event;
+
+        JsonArrayRequest jq = new JsonArrayRequest(Request.Method.GET,
+                url, null,
+                new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        tv1.setText("Found " + String.valueOf(response.length()));
+                        try {
+                            processEvent(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error.getMessage());
+                tv1.setText(error.getMessage());
+            }
+        });
+        requestQueue.add(jq);
+    }
+
+    private void processEvent(JSONArray response){
+        JSONObject jo = response.getJSONObject(0);
+        tv2.setText(jo.getString("Description"));
     }
 
     private void getGames(){
