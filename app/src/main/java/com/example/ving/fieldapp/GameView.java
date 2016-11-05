@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Button;
 
 import com.android.volley.Request;
@@ -17,7 +20,9 @@ public class GameView extends AppCompatActivity {
 
     String event;
     String game;
+    TextView tv1;
     Button bt1;
+    Button bt2;
     RequestQueue requestQueue;
 
     @Override
@@ -37,6 +42,14 @@ public class GameView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 deleteGame();
+            }
+        });
+
+        bt2 = (Button) findViewById(R.id.button4);
+        bt2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editGame();
             }
         });
 
@@ -73,6 +86,13 @@ public class GameView extends AppCompatActivity {
     private void finishDelete(){
         Intent i = new Intent(getApplicationContext(), GameActivity.class);
         i.putExtra("event",event);
+        startActivity(i);
+    }
+
+    private void editGame(){
+        Intent i = new Intent(getApplicationContext(), EditGameActivity.class);
+        i.putExtra("event",event);
+        i.putExtra("game",game);
         startActivity(i);
     }
 
