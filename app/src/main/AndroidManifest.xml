@@ -21,7 +21,9 @@
         <activity android:name=".GameActivity" />
         <activity android:name=".AddEventActivity" />
         <activity android:name=".AddGameActivity" />
-        <activity android:name=".GameView"></activity>
+        <activity android:name=".GameView" />
+        <activity android:name=".EditEventActivity" />
+        <activity android:name=".EditGameActivity"></activity>
     </application>
 
 </manifest>

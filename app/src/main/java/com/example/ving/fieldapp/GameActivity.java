@@ -9,18 +9,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -29,6 +30,8 @@ public class GameActivity extends AppCompatActivity {
     String event;
     TextView tv1;
     ListView lv1;
+    Button bt1;
+    Button bt2;
     RequestQueue requestQueue;
 
     @Override
@@ -43,6 +46,21 @@ public class GameActivity extends AppCompatActivity {
 
         tv1 = (TextView) findViewById(R.id.textView1);
         tv1.setText(event);
+
+        bt1 = (Button) findViewById(R.id.button2);
+        bt2 = (Button) findViewById(R.id.button3);
+        bt1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addGame();
+            }
+        });
+        bt2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteEvent();
+            }
+        });
 
         lv1 = (ListView) findViewById(R.id.listView1);
         requestQueue = Volley.newRequestQueue(this);
@@ -127,6 +145,43 @@ public class GameActivity extends AppCompatActivity {
     private void addGame(){
         Intent i = new Intent(getApplicationContext(), AddGameActivity.class);
         i.putExtra("event", event);
+        startActivity(i);
+    }
+
+    private void editEvent(){
+        Intent i = new Intent(getApplicationContext(), EditEventActivity.class);
+        i.putExtra("event", event);
+        startActivity(i);
+    }
+
+    private void deleteEvent(){
+        String url = "https://cs496-vtrung.appspot.com/api/event/" + event;
+
+        StringRequest sr = new StringRequest(Request.Method.DELETE, url,
+                new Response.Listener<String>() {
+                    public void onResponse(String response) {
+                        // set delay
+                        new android.os.Handler().postDelayed(
+                            new Runnable() {
+                                public void run() {
+                                    finishDelete();
+                                }
+                            }, 500
+                        );
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        finishDelete();
+                    }
+                }
+        );
+        requestQueue.add(sr);
+    }
+
+    private void finishDelete(){
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(i);
     }
 }
