@@ -46,8 +46,13 @@ public class AddGameActivity extends AppCompatActivity {
         StringRequest sr = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     public void onResponse(String response) {
-                        String test = response;
-                        finishPost();
+                        new android.os.Handler().postDelayed(
+                            new Runnable() {
+                                public void run() {
+                                    finishPost();
+                                }
+                            }, 500
+                        );
                     }
                 },
                 new Response.ErrorListener() {
