@@ -4,8 +4,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.view.View;
+import android.view.Window;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
+
 import com.android.volley.*;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
@@ -21,12 +23,15 @@ public class MainActivity extends AppCompatActivity {
     TextView tv1;
     ListView lv1;
     Button bt1;
+    ImageButton ib1;
+
     RequestQueue requestQueue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.activity_main);
+
 
         tv1 = (TextView)findViewById(R.id.textView1);
         tv1.setText("Select an Event");
@@ -36,6 +41,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 addEvent();
+            }
+        });
+
+        ib1 = (ImageButton) findViewById(R.id.imageButton);
+        ib1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goHome();
             }
         });
 
@@ -57,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONArray response) {
-                        tv1.setText("Found " + String.valueOf(response.length()));
+                        tv1.setText("Select an Event: Found " + String.valueOf(response.length()));
                         try {
                             processEvents(response);
                         } catch (JSONException e) {
@@ -124,6 +137,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void addEvent(){
         Intent i = new Intent(getApplicationContext(), AddEventActivity.class);
+        startActivity(i);
+    }
+
+    private void goHome(){
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(i);
     }
 }

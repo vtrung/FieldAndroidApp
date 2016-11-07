@@ -2,6 +2,7 @@ package com.example.ving.fieldapp;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,15 +10,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.content.Context;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.Request;
 
 import java.util.*;
+import java.util.regex.Pattern;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +38,7 @@ public class EditEventActivity extends AppCompatActivity {
     EditText et4;
     Button bt1;
     RequestQueue requestQueue;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,47 +63,63 @@ public class EditEventActivity extends AppCompatActivity {
             }
         });
 
+        context = getApplicationContext();
         requestQueue = Volley.newRequestQueue(this);
-        getRequest();
+        getEvent();
+
     }
 
-    private void getRequest(){
-        String url = "https://cs496-vtrung.appspot.com/api/event/" + event;
+    private void getEvent(){
+        String url ="https://cs496-vtrung.appspot.com/api/event/" + Uri.encode(event);
+        JsonObjectRequest jq = new JsonObjectRequest(Request.Method.GET,
+                url, null,
+                new Response.Listener<JSONObject>() {
 
-        StringRequest sr = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    public void onResponse(String response) {
-                        //String test = response;
-                        //finishPut();
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //tv1.setText("Found " + String.valueOf(response.length()));
                         try {
-                            parseResponse(response);
+                            processEvent(response);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        finishPut();
-                    }
-                }
-        );
-        requestQueue.add(sr);
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error.getMessage());
+                // tv1.setText(error.getMessage());
+            }
+        });
+        requestQueue.add(jq);
     }
 
-    private void parseResponse(String response) throws JSONException {
-        JSONArray jr = new JSONArray(response);
-        JSONObject jo = jr.getJSONObject(0);
-
-        tv1.setText(jo.getString("Name"));
+    private void processEvent(JSONObject jo) throws JSONException {
+        tv1.setText("Event: " + jo.getString("Name"));
         et1.setText(jo.getString("Description"));
         et2.setText(jo.getString("Location"));
         et3.setText(jo.getString("Date"));
     }
 
+    private void filterRequest(){
+        String s = "abcdefà";
+        Pattern p = Pattern.compile("[^a-zA-Z0-9_-]");
+        boolean hasSpecialChar = p.matcher(s).find();
+        String description = et1.getText().toString();
+        String time = et2.getText().toString();
+        String location = et3.getText().toString();
+        if(description.isEmpty() || time.isEmpty() || location.isEmpty()){
+            CharSequence text = "Description, Time and Location cannot be empty";
+
+            Toast toast = Toast.makeText(context, text, Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+    }
+
     private void putRequest(){
-        String url = "https://cs496-vtrung.appspot.com/api/event/" + event;
+        String url = "https://cs496-vtrung.appspot.com/api/event/" + Uri.encode(event);
 
         StringRequest sr = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>() {
@@ -122,9 +145,9 @@ public class EditEventActivity extends AppCompatActivity {
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
                 params.put("name", event);
-                params.put("time",et2.getText().toString());
-                params.put("loc", et3.getText().toString());
-                params.put("des",et4.getText().toString());
+                params.put("des",et1.getText().toString());
+                params.put("loc", et2.getText().toString());
+                params.put("time",et3.getText().toString());
 
                 return params;
             }
@@ -142,6 +165,11 @@ public class EditEventActivity extends AppCompatActivity {
     private void finishPut(){
         Intent i = new Intent(getApplicationContext(), GameActivity.class);
         i.putExtra("event",event);
+        startActivity(i);
+    }
+
+    private void goHome(){
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(i);
     }
 }
