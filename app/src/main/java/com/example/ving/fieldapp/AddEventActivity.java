@@ -1,6 +1,7 @@
 package com.example.ving.fieldapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -42,7 +43,7 @@ public class AddEventActivity extends AppCompatActivity implements LocationListe
     Button bt2;
     RequestQueue requestQueue;
     Context context;
-
+    String user;
     LocationManager lm = null;
     LocationListener locationListener;
 
@@ -50,6 +51,9 @@ public class AddEventActivity extends AppCompatActivity implements LocationListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event);
+
+        SharedPreferences settings = this.getSharedPreferences("login", this.MODE_PRIVATE);
+        user = settings.getString("user", "");
 
         tv1 = (TextView)findViewById(R.id.textView);
         tv1.setText("Add a New Event");
@@ -129,7 +133,7 @@ public class AddEventActivity extends AppCompatActivity implements LocationListe
     }
 
     private void postRequest(){
-        String url = "https://cs496-vtrung.appspot.com/api/event";
+        String url = "https://cs496-vtrung.appspot.com/api/eventperson";
 
         StringRequest sr = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
@@ -155,6 +159,7 @@ public class AddEventActivity extends AppCompatActivity implements LocationListe
             @Override
             protected Map<String,String> getParams(){
                 Map<String,String> params = new HashMap<String, String>();
+                params.put("username", user);
                 params.put("name",et1.getText().toString());
                 params.put("time",et2.getText().toString());
                 params.put("loc", et3.getText().toString());
